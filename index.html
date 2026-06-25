@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Template Generator</title>
+    <meta name="description" content="Generate template chat otomatis untuk outreach perusahaan">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --white: #ffffff;
+            --bg: #f8f7f4;
+            --bg-warm: #faf9f6;
+            --crimson: #c1272d;
+            --crimson-dark: #9b1b20;
+            --crimson-light: #e74c52;
+            --crimson-glow: rgba(193,39,45,0.08);
+            --crimson-glow-md: rgba(193,39,45,0.12);
+            --navy: #1a1a2e;
+            --navy-light: #2d2d44;
+            --text: #2a2a3c;
+            --text-secondary: #6b6b80;
+            --text-muted: #9e9eb0;
+            --border: #ebebeb;
+            --border-light: #f2f2f2;
+            --green: #10b981;
+            --green-bg: rgba(16,185,129,0.08);
+            --wa-green: #25d366;
+            --blue: #3b82f6;
+            --pink: #ec4899;
+            --radius: 20px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
+            --radius-xs: 8px;
+            --shadow-subtle: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+            --shadow-card: 0 4px 24px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.03);
+            --shadow-elevated: 0 12px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased;
+        }
+
+        /* HEADER */
+        .header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .header-inner { max-width: 920px; margin: 0 auto; padding: 0 32px; }
+        .header-top {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 0 10px;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #fff;
+            box-shadow: 0 4px 16px rgba(193,39,45,0.25);
+        }
+        .logo-text { font-size: 17px; font-weight: 800; color: var(--navy); letter-spacing: -0.3px; }
+        .logo-text span { color: var(--crimson); }
+
+        .nav-tabs { display: flex; gap: 2px; }
+        .nav-tab {
+            position: relative; padding: 10px 20px;
+            font-size: 13px; font-weight: 600; font-family: inherit;
+            color: var(--text-muted); background: none; border: none; cursor: pointer;
+            transition: var(--transition); border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+        }
+        .nav-tab:hover { color: var(--text); background: var(--crimson-glow); }
+        .nav-tab.active { color: var(--crimson); background: var(--crimson-glow); }
+        .nav-tab.active::after {
+            content: ''; position: absolute;
+            bottom: 0; left: 14px; right: 14px; height: 2.5px;
+            background: var(--crimson); border-radius: 2px 2px 0 0;
+        }
+        .tab-badge {
+            font-size: 9px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase;
+            padding: 2px 7px; border-radius: 5px; margin-left: 6px;
+            background: var(--border-light); color: var(--text-muted); vertical-align: middle;
+        }
+        .nav-tab.active .tab-badge { background: rgba(193,39,45,0.1); color: var(--crimson); }
+
+        /* MAIN */
+        .main { max-width: 920px; margin: 0 auto; padding: 28px 32px 100px; }
+        .tab-content { display: none; animation: fadeIn 0.35s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PROFILE PIC */
+        .profile-pic {
+            display: flex; align-items: center; justify-content: center;
+        }
+        .profile-pic img {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--white);
+            box-shadow: 0 0 0 2px var(--crimson), 0 4px 12px var(--crimson-glow-md);
+            animation: pulse-glow 2s infinite alternate;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .profile-pic img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 0 2px var(--crimson), 0 0 0 0 rgba(193,39,45,0.4); }
+            to { box-shadow: 0 0 0 2px var(--crimson), 0 0 0 8px rgba(193,39,45,0); }
+        }
+
+        /* CARD */
+        .card {
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 32px;
+            margin-bottom: 20px; box-shadow: var(--shadow-subtle);
+        }
+        .card-title {
+            font-size: 15px; font-weight: 800; color: var(--navy);
+            display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+        }
+        .card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+
+        /* FORMS */
+        .form-group { margin-bottom: 20px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label {
+            display: block; font-size: 11px; font-weight: 700;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 8px;
+        }
+        .form-group label .hint {
+            font-weight: 500; text-transform: none; letter-spacing: 0;
+            color: var(--text-muted); opacity: 0.7;
+        }
+        .form-group textarea, .form-group input, .form-group select {
+            width: 100%; padding: 12px 16px;
+            background: var(--bg-warm); border: 1.5px solid var(--border);
+            border-radius: var(--radius-xs);
+            font-size: 14px; font-weight: 500; font-family: inherit;
+            color: var(--text); outline: none; transition: var(--transition);
+        }
+        .form-group textarea {
+            min-height: 240px; resize: vertical; line-height: 1.75; font-size: 13px;
+        }
+        .form-group textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
+        .form-group textarea:focus, .form-group input:focus, .form-group select:focus {
+            border-color: var(--crimson);
+            box-shadow: 0 0 0 4px var(--crimson-glow);
+            background: var(--white);
+        }
+        .form-group select { cursor: pointer; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-row .form-group { margin-bottom: 0; }
+
+        .branch-field { display: none; }
+        .branch-field.visible { display: block; }
+
+        .btn-generate {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 36px; margin-top: 8px;
+            background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+            color: #fff; border: none; border-radius: var(--radius-xs);
+            font-size: 14px; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(193,39,45,0.25);
+        }
+        .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(193,39,45,0.35); }
+        .btn-generate:active { transform: translateY(0); }
+
+        /* RESULT HEADER */
+        .result-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 14px; margin-bottom: 24px;
+        }
+        .result-summary { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+        .result-summary strong { color: var(--crimson); }
+
+        .btn-copy-all {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 20px;
+            background: var(--green-bg); color: var(--green);
+            border: 1.5px solid rgba(16,185,129,0.2);
+            border-radius: var(--radius-xs);
+            font-size: 12px; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: var(--transition);
+        }
+        .btn-copy-all:hover { background: var(--green); color: #fff; }
+
+        /* COMPANY CARD */
+        .company-card {
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-bottom: 20px;
+            overflow: hidden; box-shadow: var(--shadow-subtle);
+            transition: var(--transition);
+        }
+        .company-card:hover { box-shadow: var(--shadow-card); }
+        @keyframes cardSlide {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .company-name-bar {
+            background: var(--navy); color: #fff;
+            padding: 14px 24px; font-size: 13px; font-weight: 700;
+            letter-spacing: 0.3px; display: flex; align-items: center; gap: 10px;
+        }
+        .company-name-bar .co-icon {
+            width: 28px; height: 28px; border-radius: 6px;
+            background: rgba(255,255,255,0.12);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; flex-shrink: 0;
+        }
+        .contact-item {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .contact-item:last-child { border-bottom: none; }
+
+        .contact-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+        }
+        .contact-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .contact-name { font-size: 14px; font-weight: 700; color: var(--text); }
+        .contact-phone {
+            font-size: 11px; color: var(--text-muted);
+            background: var(--bg-warm); padding: 3px 10px; border-radius: 100px;
+            font-weight: 600;
+        }
+        .contact-gender {
+            font-size: 9px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+            padding: 3px 10px; border-radius: 100px;
+        }
+        .contact-gender.male { background: rgba(59,130,246,0.1); color: var(--blue); }
+        .contact-gender.female { background: rgba(236,72,153,0.1); color: var(--pink); }
+        .contact-gender.unknown { background: var(--bg-warm); color: var(--text-muted); }
+
+        /* TEMPLATE SELECTOR */
+        .template-tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+        .tpl-tab {
+            padding: 5px 12px; font-size: 10px; font-weight: 700;
+            font-family: inherit; color: var(--text-muted);
+            background: var(--bg-warm); border: 1px solid var(--border-light);
+            border-radius: 6px; cursor: pointer; transition: var(--transition);
+            white-space: nowrap;
+        }
+        .tpl-tab:hover:not(.disabled) { border-color: var(--border); color: var(--text); }
+        .tpl-tab.active { background: var(--crimson-glow-md); color: var(--crimson); border-color: rgba(193,39,45,0.2); }
+        .tpl-tab.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+
+        /* MESSAGE BOX */
+        .message-box {
+            background: var(--bg-warm); border: 1px solid var(--border-light);
+            border-radius: var(--radius-xs); padding: 16px 20px;
+            font-size: 13px; line-height: 1.9; color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        /* ACTION BUTTONS */
+        .action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-copy {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 8px 16px; background: var(--green-bg); color: var(--green);
+            border: 1px solid rgba(16,185,129,0.15); border-radius: 6px;
+            font-size: 11px; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: var(--transition);
+        }
+        .btn-copy:hover, .btn-copy.copied { background: var(--green); color: #fff; }
+        .btn-wa {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 8px 16px; background: rgba(37,211,102,0.08); color: #128c7e;
+            border: 1px solid rgba(37,211,102,0.15); border-radius: 6px;
+            font-size: 11px; font-weight: 700; font-family: inherit;
+            cursor: pointer; text-decoration: none; transition: var(--transition);
+        }
+        .btn-wa:hover { background: var(--wa-green); color: #fff; }
+
+        /* EMPTY STATE */
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state .es-icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; }
+        .empty-state p { font-size: 13px; }
+
+        /* TOAST */
+        .toast {
+            position: fixed; bottom: 32px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--navy); color: #fff;
+            padding: 12px 24px; border-radius: var(--radius-xs);
+            font-size: 13px; font-weight: 600; font-family: inherit;
+            box-shadow: var(--shadow-elevated);
+            opacity: 0; transition: all 0.3s ease; z-index: 1000;
+            pointer-events: none; white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* FOOTER */
+        .footer {
+            text-align: center; padding: 32px; color: var(--text-muted);
+            font-size: 11px; border-top: 1px solid var(--border); background: var(--white);
+        }
+        .footer strong { color: var(--crimson); }
+
+        /* MOBILE */
+        @media (max-width: 640px) {
+            .main { padding: 20px 16px 80px; }
+            .header-inner { padding: 0 16px; }
+            .card { padding: 24px 20px; }
+            .company-name-bar { padding: 14px 18px; font-size: 12px; }
+            .contact-item { padding: 16px 18px; }
+            .nav-tab { padding: 10px 14px; font-size: 12px; }
+            .form-row { grid-template-columns: 1fr; }
+            .result-header { flex-direction: column; align-items: flex-start; }
+            .template-tabs { gap: 3px; }
+            .tpl-tab { font-size: 9px; padding: 4px 8px; }
+            .contact-info { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .action-btns { width: 100%; justify-content: space-between; }
+            .btn-copy, .btn-wa { flex: 1; justify-content: center; padding: 12px 16px; font-size: 12px; }
+            .message-box { word-break: break-word; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <div class="header-top">
+            <div class="logo">
+                <div class="logo-icon">💬</div>
+                <div class="logo-text">Chat <span>Template</span></div>
+            </div>
+            <div class="profile-pic">
+                <img src="profile.png" alt="Profile">
+            </div>
+        </div>
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="input" onclick="switchTab('input')">📝 Input Data<span class="tab-badge">Menu 1</span></button>
+            <button class="nav-tab" data-tab="result" onclick="switchTab('result')">📋 Hasil Template<span class="tab-badge" id="result-badge">Menu 2</span></button>
+        </nav>
+    </div>
+</header>
+
+<main class="main">
+
+<!-- ===== TAB 1: INPUT ===== -->
+<div class="tab-content active" id="tab-input">
+    <div class="card">
+        <div class="card-title">📝 Data Perusahaan &amp; Kontak</div>
+        <div class="card-desc">Paste daftar perusahaan beserta nama kontak dan nomor telepon. Maksimal 100 perusahaan.<br>Sistem akan otomatis mendeteksi gender (Bapak/Ibu) dari nama, membersihkan jabatan, dan memisahkan multi-nomor. Jika gender tidak terdeteksi, default "Bapak".</div>
+
+        <div class="form-group">
+            <label>Daftar Perusahaan &amp; Kontak</label>
+            <textarea id="input-data" placeholder="Contoh format:&#10;&#10;PT. LOREM IPSUM PERSADA&#10;• Budi Santoso - 081234567890&#10;&#10;PT. MAJU BERSAMA&#10;• Andi - 081122334455&#10;&#10;PT. DUMMY DATA NUSANTARA&#10;• Bapak X - 088899990000"></textarea>
+        </div>
+
+        <div class="form-row" style="margin-bottom: 20px;">
+            <div class="form-group">
+                <label>Lokasi Terhadap Kantor</label>
+                <select id="input-proximity" onchange="toggleBranch()">
+                    <option value="jauh">Jauh dari Kantor</option>
+                    <option value="dekat">Dekat dari Kantor</option>
+                </select>
+            </div>
+            <div class="form-group branch-field" id="branch-field">
+                <label>Nama Cabang <span class="hint">(dipakai saat Dekat)</span></label>
+                <input type="text" id="input-branch" placeholder="Contoh: KC Sudirman atau KCP Mampang">
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 28px;">
+            <label>Nama Saya <span class="hint">(untuk perkenalan di template)</span></label>
+            <input type="text" id="input-myname" placeholder="Contoh: Dany">
+        </div>
+
+        <button class="btn-generate" onclick="generateTemplates()">🚀 Generate Template</button>
+    </div>
+</div>
+
+<!-- ===== TAB 2: RESULTS ===== -->
+<div class="tab-content" id="tab-result">
+    <div id="result-container">
+        <div class="empty-state">
+            <div class="es-icon">📭</div>
+            <h3>Belum ada template</h3>
+            <p>Silakan isi data di Menu Input, lalu klik Generate Template.</p>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer class="footer">
+    Chat Template Generator &mdash; <strong>Bank Jakarta</strong>
+</footer>
+
+<script>
+// ===== STATE =====
+let parsedData = [];
+let messageMap = {};
+let phoneMap = {};
+let currentProximity = 'jauh';
+let currentBranch = '';
+let currentMyName = '';
+
+// ===== UI HELPERS =====
+function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
+}
+
+function toggleBranch() {
+    const v = document.getElementById('input-proximity').value;
+    document.getElementById('branch-field').classList.toggle('visible', v === 'dekat');
+}
+
+let toastTimer;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function formatMsg(msg) {
+    return escapeHtml(msg).replace(/\n/g, '<br>');
+}
+
+// ===== GENDER DETECTION =====
+const maleNames = new Set([
+    'abdul','ahmad','adi','agung','agus','akbar','alex','ali','amin',
+    'andi','andri','andre','angga','anwar','arief','arif','aris','asep',
+    'bagus','bambang','bayu','beni','billy','bobby','budi','budianto',
+    'cahyo','chairul','chandra','christian',
+    'dadan','dadang','dani','daniel','danny','danu','darmawan','david','dedy','deni','denny','dicky','didi','diki','dimas','dodi','donny',
+    'edi','eddy','eko','elang','erwin','erik',
+    'fajar','faisal','farhan','feri','ferry','firman','firdaus',
+    'galih','gilang','gunawan','guntur',
+    'hadi','hafiz','hakim','halim','hamzah','handi','hanif','hari','haris','hasan','hendri','henry','heri','herman','heriyanto','huda','husein',
+    'ibrahim','ichsan','ikhsan','ilham','imam','irfan','irwan','irawan','ismail',
+    'jaka','james','jimmy','johan','john','joko','jonathan','jono','junaidi',
+    'kemal','kevin','kurniawan',
+    'lukman','ludy','luthfi',
+    'made','mahmud','mahendra','mansur','marwan','michael','miftah','muhamad','muhammad','mulyadi','mustofa',
+    'nanto','nasir','nugroho','nurdin',
+    'oka','omar','oscar',
+    'panji','pandu','patrick','peter','prabowo','pramono','pranoto','prasetyo','priyadi','purnomo','putra','putu',
+    'rachmat','rafael','rafly','rahmat','rahmanda','raka','rama','ramadan','randi','rangga','reza','ridho','ridwan','riski','rizal','rizki','robert','roni','ronny','rudi','rusdi','rusman',
+    'sahrul','saiful','samsul','sandy','sandi','satrio','setiawan','sigit','slamet','soetomo','subagyo','sugeng','sugianto','suharjo','suhendar','sulaiman','supri','surya','suryadi','sutrisno',
+    'taufik','taufiq','tedi','teddy','thomas','tommy','tony','toto','tri','triyono',
+    'udin','ujang','umar','usman',
+    'victor','vicky',
+    'wahyu','wahid','wawan','wibowo','widodo','wijaya','william','wira',
+    'yanto','yosef','yudi','yusuf','yusri',
+    'zainal','zaki','zulfikar','zulkifli'
+]);
+const femaleNames = new Set([
+    'aisyah','amalia','amanda','ana','angel','anggraeni','ani','anisa','annisa','arum','astri','astuti','ayu',
+    'bunga',
+    'cantika','cici','cinta','citra',
+    'desi','dewi','diah','dian','diana','dina','dini',
+    'elsa','endang','erni','eva','evi',
+    'farida','fatimah','feby','feni','fitri','fitria','fitriani','fitratun',
+    'gita','grace',
+    'hani','hanna','helena','herlina','hermin',
+    'ida','ika','indah','indri','intan','ira','irawati','irma','isti',
+    'jessica','juliana','julia',
+    'kartika','kartini','kemala','kiki',
+    'laila','lena','lestari','lia','lina','linda','lisa','lusi','lutfiah',
+    'maria','marlina','maya','mega','melia','melinda','mila','mira','monica','mutiara',
+    'nabila','nana','nanik','niken','nina','ningsih','nisa','nita','novi','nur','nurhayati','nurjanah','nurul',
+    'oktavia',
+    'patricia','prima','puji','puspita','putri',
+    'rara','ratih','ratna','reni','ria','rika','rina','rini','rita','rizka','rosa',
+    'santi','sarah','sari','shinta','silvia','sinta','siska','siti','sri','suci','sulastri','suryani','susi',
+    'tika','tina','tini','titin','tuti',
+    'umi','utami',
+    'vera','vina','vita',
+    'wahyuni','wati','wida','widya','wulan','wulandari',
+    'yani','yanti','yenni','yesi','yuli','yuliana','yuni','yunita',
+    'zahra','zainab'
+]);
+
+// ===== JOB TITLE LIST =====
+const jobTitles = [
+    'CEO','COO','CFO','CTO','CMO','CCO','CIO','CPO','CDO','CHRO',
+    'VP','SVP','EVP','AVP',
+    'President Director','Presiden Direktur','Direktur Utama','Direktur',
+    'Managing Director','General Manager','Deputy Director',
+    'Senior Manager','Manager','Asst Manager','Assistant Manager',
+    'Head of','Kepala','Kabag','Kadiv','Kasubag',
+    'Supervisor','Koordinator','Coordinator',
+    'Marketing Manager','Marketing Director','Marketing',
+    'Finance Manager','Finance Director','Finance',
+    'HRD Manager','HRD','HR Manager','HR Director',
+    'Sales Manager','Sales Director','Sales',
+    'Operations Manager','Operations Director','Operations',
+    'Business Development','Busdev','BD Manager',
+    'Procurement Manager','Procurement','Purchasing Manager','Purchasing',
+    'Project Manager','IT Manager','Legal Manager','Legal',
+    'Secretary','Sekretaris','Admin','Staff','Officer','Executive',
+    'Commissioner','Komisaris','Komisaris Utama',
+    'Owner','Founder','Co-Founder','Partner',
+    'Accounting Manager','Accounting','Akuntan',
+    'Branch Manager','Area Manager','Regional Manager','Division Head',
+    'Technical Director','Production Manager'
+];
+// Sort by length descending so longer titles match first
+const jobTitlePatterns = jobTitles.sort((a,b) => b.length - a.length);
+
+function stripJobTitle(name) {
+    let n = name;
+    // Remove parenthesized titles like (CCO), (Marketing Manager)
+    n = n.replace(/\s*\([^)]*\)\s*/g, ' ');
+    // Remove known job titles (case insensitive, whole words)
+    for (const title of jobTitlePatterns) {
+        const re = new RegExp('\\b' + title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b[\\s,\\-–]*', 'gi');
+        n = n.replace(re, ' ');
+    }
+    // Remove trailing/leading dashes, commas, spaces
+    n = n.replace(/[\s,\-–]+$/g, '').replace(/^[\s,\-–]+/g, '').replace(/\s{2,}/g, ' ').trim();
+    return n;
+}
+
+function cleanName(name) {
+    let n = name;
+    // Strip job titles first
+    n = stripJobTitle(n);
+    // Remove weird characters: keep letters (incl. accented), spaces, dots, apostrophes, hyphens
+    n = n.replace(/[^a-zA-ZÀ-ÿ\s\.'\'\-]/g, '');
+    // Collapse multiple spaces
+    n = n.replace(/\s{2,}/g, ' ').trim();
+    // Remove trailing dots or dashes
+    n = n.replace(/[\.\-]+$/g, '').trim();
+    return n;
+}
+
+function detectGender(fullName) {
+    if (!fullName || !fullName.trim()) return 'unknown';
+    const original = fullName.trim();
+    if (/^(PT|CV|UD|PD|PERUSAHAAN|KOPERASI|YAYASAN)\b/i.test(original)) return 'unknown';
+
+    // Title-based
+    if (/^Hj[\.\s]/i.test(original)) return 'female';
+    if (/^Dra[\.\s]/i.test(original)) return 'female';
+    if (/^(Ibu|Ny)[\.\s]/i.test(original)) return 'female';
+    if (/^H[\.\s]/i.test(original) && !/^Hj/i.test(original)) return 'male';
+    if (/^(Bpk|Pak)[\.\s]/i.test(original)) return 'male';
+
+    // Strip academic/honorary titles for first-name check
+    let cleaned = original.replace(/^(H\.?\s+|Hj\.?\s+|Ir\.?\s+|Dr\.?\s+|Drs\.?\s+|Dra\.?\s+|Prof\.?\s+|Bpk\.?\s+|Pak\s+|Ibu\s+|Ny\.?\s+|SE\.?\s*,?\s*|SH\.?\s*,?\s*|MM\.?\s*,?\s*)/gi, '');
+    const firstName = cleaned.split(/\s+/)[0].toLowerCase().replace(/[^a-z]/g, '');
+
+    if (maleNames.has(firstName)) return 'male';
+    if (femaleNames.has(firstName)) return 'female';
+
+    // Heuristic endings
+    if (/wan$|man$|din$|ud$|us$|to$|no$|ko$|go$|yo$/.test(firstName)) return 'male';
+    if (/wati$|yah$|tun$|ningsih$|ah$|ijah$|ti$|ni$|si$/.test(firstName) && firstName.length > 3) return 'female';
+
+    return 'unknown';
+}
+
+// ===== INPUT PARSING =====
+function extractPhonesRobust(text) {
+    const regex = /(?:\+?62|0)\s*8[\dxX\-\s\(\)\.]{4,25}/ig;
+    let matches = text.match(regex);
+    let results = [];
+    if (matches) {
+        for (let m of matches) {
+            // Trim trailing non phone chars like spaces, parens
+            m = m.replace(/[\s\-\(\)\.]+$/, '');
+            let digits = m.replace(/[^\dxX]/ig, '');
+            if (digits.length >= 6 && digits.length <= 18) {
+                results.push({
+                    original: m,
+                    cleaned: m.replace(/[^\dxX\+]/ig, '')
+                });
+            }
+        }
+    }
+    return results;
+}
+
+function parseInput(text) {
+    const lines = text.split('\n');
+    const companies = [];
+    let current = null;
+
+    for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) continue;
+
+        const isCompanyPrefix = /^(PT\.?\s|CV\.?\s|UD\.?\s|PD\.?\s|PERUSAHAAN\s|KOPERASI\s|YAYASAN\s)/i.test(line);
+        const phonesFound = extractPhonesRobust(line);
+        const hasPhone = phonesFound.length > 0;
+        const hasBullet = /^[•\-\*>\d+\.\)]\s/.test(line);
+        const isAllCaps = (line === line.toUpperCase() && line.replace(/[^A-Z]/g, '').length > 3);
+
+        let isCompany = false;
+        let isContact = false;
+
+        // If it looks like a company name prefix, it's a company
+        if (isCompanyPrefix) {
+            isCompany = true;
+        } 
+        // If it has a phone number or a bullet, it's strongly a contact
+        else if (hasPhone || hasBullet) {
+            isContact = true;
+        } 
+        // If it's ALL CAPS (and no phone/bullet), it's probably a company name
+        else if (isAllCaps) {
+            isCompany = true;
+        } 
+        // Otherwise, if we have a current company, append as contact
+        else if (current) {
+            isContact = true;
+        } 
+        // Default to company if no current company exists
+        else {
+            isCompany = true;
+        }
+
+        if (isCompany) {
+            // Clean company name
+            let coName = line.replace(/^[•\-\*>\s]+/, '');
+            coName = coName.replace(/[^a-zA-ZÀ-ÿ0-9\s\.\-\'\&,]/g, '').replace(/\s{2,}/g, ' ').trim();
+            current = { name: coName, contacts: [] };
+            companies.push(current);
+        } else if (isContact && current) {
+            let contactLine = line.replace(/^[•\-\*>\s]+/, '').trim();
+            if (!contactLine) continue;
+
+            let name = contactLine;
+            let phones = [];
+
+            if (hasPhone) {
+                for (const pf of phonesFound) {
+                    phones.push(pf.cleaned);
+                    name = name.replace(pf.original, '');
+                }
+            }
+
+            // Clean up name by removing dangling brackets or dashes left after phone removal
+            name = name.trim();
+            name = name.replace(/[\-\–\—\(\)\,\:\/]+$/g, '').trim();
+            name = name.replace(/^[\-\–\—\(\)\,\:\/]+/g, '').trim();
+            name = cleanName(name);
+            const gender = detectGender(name);
+
+            if (phones.length > 0) {
+                for (const phone of phones) {
+                    current.contacts.push({ name, phone, gender });
+                }
+            } else {
+                current.contacts.push({ name, phone: '', gender });
+            }
+        }
+    }
+
+    // Companies with no contacts get a blank entry
+    companies.forEach(c => {
+        if (c.contacts.length === 0) {
+            c.contacts.push({ name: '', phone: '', gender: 'unknown' });
+        }
+    });
+
+    return companies;
+}
+
+// ===== GREETING HELPER =====
+function getGreeting(contact) {
+    const g = contact.gender;
+    const isCompanyName = /^(PT|CV|UD|PD|PERUSAHAAN)\b/i.test((contact.name || '').trim());
+    const hasName = contact.name && contact.name.trim() && !isCompanyName;
+
+    let panggilan;
+    if (g === 'female') panggilan = 'Ibu';
+    else panggilan = 'Bapak'; // Default Bapak for male & unknown
+
+    const panggilanNama = hasName ? (panggilan + ' ' + contact.name.trim()) : panggilan;
+    return { panggilan, panggilanNama };
+}
+
+// ===== 5 TEMPLATES =====
+const templateMeta = {
+    1: { label: '🏢 Dekat Kantor', dekatOnly: true },
+    2: { label: '📋 Formal', dekatOnly: false },
+    3: { label: '🕌 Salam Islami', dekatOnly: false },
+    4: { label: '👋 Santai', dekatOnly: false },
+    5: { label: '💼 Profesional', dekatOnly: false }
+};
+
+function buildTemplate(tplId, contact, company, proximity, branch, myName) {
+    const { panggilan, panggilanNama } = getGreeting(contact);
+    const bankLabel = (proximity === 'dekat' && branch) ? `Bank Jakarta ${branch}` : 'Bank Jakarta';
+    const co = company.name;
+
+    switch (tplId) {
+        case 1:
+            return `Selamat pagi ${panggilanNama}, izin menyapa \uD83D\uDE01\n\nPerkenalkan, saya ${myName} dari ${bankLabel} \uD83D\uDE4F\n\nKami melihat potensi kerjasama dengan ${co} dan ingin bersilaturahmi serta berdiskusi apabila ${panggilanNama} berkenan. Kebetulan kantor kami berlokasi tidak jauh dari lokasi ${panggilan}, sehingga kami bisa mampir kapan saja sesuai waktu yang ${panggilan} nyaman.\n\nTerima kasih sebelumnya \uD83D\uDE4F\uD83D\uDE01`;
+
+        case 2:
+            return `Selamat pagi ${panggilanNama}, izin menyapa \uD83D\uDE01\n\nPerkenalkan, saya ${myName} dari ${bankLabel} \uD83D\uDE4F\n\nKami melihat potensi kerjasama dengan ${co} dan ingin bersilaturahmi serta berdiskusi apabila ${panggilanNama} berkenan.\n\nTerima kasih sebelumnya \uD83D\uDE4F\uD83D\uDE01`;
+
+        case 3:
+            return `Assalamu'alaikum ${panggilanNama}, mohon maaf mengganggu waktunya \uD83D\uDE4F\n\nPerkenalkan, saya ${myName} dari ${bankLabel}. Saat ini kami sedang aktif menjalin kemitraan dengan perusahaan-perusahaan potensial dan kami melihat ${co} sebagai salah satu mitra yang sangat menarik.\n\nApakah ${panggilanNama} berkenan meluangkan waktu untuk berdiskusi lebih lanjut?\n\nTerima kasih banyak \uD83D\uDE4F\uD83D\uDE0A`;
+
+        case 4:
+            return `Halo ${panggilanNama}, selamat pagi \uD83D\uDC4B\uD83D\uDE0A\n\nSaya ${myName} dari ${bankLabel}. Kami ingin memperkenalkan diri dan menawarkan solusi pembiayaan terbaik untuk ${co}.\n\nJika ${panggilanNama} berkenan, kami sangat senang bisa bersilaturahmi dan menjelaskan lebih detail mengenai produk dan layanan kami.\n\nDitunggu kabar baiknya ya ${panggilan} \uD83D\uDE4F\uD83D\uDE01`;
+
+        case 5:
+            return `Selamat siang ${panggilanNama} \uD83D\uDE4F\n\nPerkenalkan, saya ${myName} dari ${bankLabel}. Kami sedang memperluas jaringan kemitraan dan tertarik untuk mengenal lebih dekat ${co}.\n\nBesar harapan kami dapat berdiskusi dengan ${panggilanNama} mengenai peluang kerjasama di bidang pembiayaan yang mungkin bermanfaat bagi perusahaan ${panggilan}.\n\nMohon kesediaan waktunya, terima kasih \uD83D\uDE4F\uD83D\uDE0A`;
+
+        default: return '';
+    }
+}
+
+// ===== PHONE UTILS =====
+function normalizePhone(phone) {
+    let c = phone.replace(/[\s\-\(\)\.]/g, '');
+    if (c.startsWith('+')) c = c.substring(1);
+    if (c.startsWith('0')) c = '62' + c.substring(1);
+    return c;
+}
+
+// ===== GENERATE & RENDER =====
+function generateTemplates() {
+    const raw = document.getElementById('input-data').value.trim();
+    currentProximity = document.getElementById('input-proximity').value;
+    currentBranch = document.getElementById('input-branch').value.trim();
+    currentMyName = document.getElementById('input-myname').value.trim();
+
+    if (!raw) { showToast('⚠️ Silakan isi data perusahaan'); return; }
+    if (!currentMyName) { showToast('⚠️ Silakan isi nama Anda'); return; }
+    if (currentProximity === 'dekat' && !currentBranch) { showToast('⚠️ Silakan isi nama cabang'); return; }
+
+    parsedData = parseInput(raw);
+    if (parsedData.length === 0) { showToast('⚠️ Tidak ditemukan data perusahaan'); return; }
+    if (parsedData.length > 100) { parsedData = parsedData.slice(0, 100); }
+
+    messageMap = {};
+    phoneMap = {};
+    renderResults();
+    switchTab('result');
+
+    const totalC = parsedData.reduce((s, c) => s + c.contacts.length, 0);
+    showToast(`✅ ${totalC} template dari ${parsedData.length} perusahaan berhasil dibuat!`);
+}
+
+function renderResults() {
+    const container = document.getElementById('result-container');
+    const totalContacts = parsedData.reduce((s, c) => s + c.contacts.length, 0);
+    const defaultTpl = currentProximity === 'dekat' ? 1 : 2;
+
+    // Update badge
+    document.getElementById('result-badge').textContent = `${totalContacts} Template`;
+
+    let html = `
+        <div class="result-header">
+            <div class="result-summary">
+                Dihasilkan <strong>${totalContacts}</strong> template dari <strong>${parsedData.length}</strong> perusahaan
+            </div>
+            <button class="btn-copy-all" onclick="copyAll()">📋 Copy Semua</button>
+        </div>`;
+
+    let idx = 0;
+    parsedData.forEach((company, ci) => {
+        html += `<div class="company-card" style="animation: cardSlide 0.4s ease ${ci * 0.04}s backwards">`;
+        html += `<div class="company-name-bar"><span class="co-icon">🏢</span>${escapeHtml(company.name)}</div>`;
+
+        company.contacts.forEach(contact => {
+            const gLabel = contact.gender === 'male' ? 'Laki-laki' : contact.gender === 'female' ? 'Perempuan' : 'Belum Diketahui';
+            const msg = buildTemplate(defaultTpl, contact, company, currentProximity, currentBranch, currentMyName);
+            messageMap[idx] = msg;
+            phoneMap[idx] = contact.phone || '';
+
+            html += `<div class="contact-item">`;
+            html += `<div class="contact-header"><div class="contact-info">`;
+            if (contact.name) html += `<span class="contact-name">${escapeHtml(contact.name)}</span>`;
+            else html += `<span class="contact-name" style="color:var(--text-muted);font-style:italic">Tanpa nama kontak</span>`;
+            if (contact.phone) html += `<span class="contact-phone">📱 ${escapeHtml(contact.phone)}</span>`;
+            html += `<span class="contact-gender ${contact.gender}">${gLabel}</span>`;
+            html += `</div></div>`;
+
+            // Template tabs
+            html += `<div class="template-tabs">`;
+            for (let t = 1; t <= 5; t++) {
+                const disabled = (t === 1 && currentProximity !== 'dekat');
+                const active = (t === defaultTpl);
+                html += `<button class="tpl-tab${active ? ' active' : ''}${disabled ? ' disabled' : ''}" data-card="${idx}" data-tpl="${t}" ${disabled ? '' : `onclick="switchTpl(${idx},${t})"`}>${templateMeta[t].label}</button>`;
+            }
+            html += `</div>`;
+
+            html += `<div class="message-box" id="msg-${idx}">${formatMsg(msg)}</div>`;
+
+            html += `<div class="action-btns">`;
+            html += `<button class="btn-copy" id="cpbtn-${idx}" onclick="copyMsg(${idx},this)">📋 Copy</button>`;
+            if (contact.phone) {
+                html += `<button class="btn-wa" onclick="sendWA(${idx})">💬 WhatsApp</button>`;
+            }
+            html += `</div></div>`;
+            idx++;
+        });
+
+        html += `</div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function switchTpl(cardIdx, tplId) {
+    // Find the right contact + company
+    let idx = 0;
+    for (const company of parsedData) {
+        for (const contact of company.contacts) {
+            if (idx === cardIdx) {
+                const msg = buildTemplate(tplId, contact, company, currentProximity, currentBranch, currentMyName);
+                messageMap[cardIdx] = msg;
+                document.getElementById('msg-' + cardIdx).innerHTML = formatMsg(msg);
+                // Update active tab
+                document.querySelectorAll(`.tpl-tab[data-card="${cardIdx}"]`).forEach(t => t.classList.remove('active'));
+                document.querySelector(`.tpl-tab[data-card="${cardIdx}"][data-tpl="${tplId}"]`).classList.add('active');
+                return;
+            }
+            idx++;
+        }
+    }
+}
+
+function sendWA(cardIdx) {
+    const text = messageMap[cardIdx];
+    const phone = phoneMap[cardIdx];
+    if (!text || !phone) return;
+    const url = 'https://wa.me/' + normalizePhone(phone) + '?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+}
+
+function copyMsg(cardIdx, btn) {
+    const text = messageMap[cardIdx];
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '📋 Copy';
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+}
+
+function copyAll() {
+    const all = Object.keys(messageMap).sort((a,b) => a-b).map(k => messageMap[k]);
+    const combined = all.join('\n\n' + '─'.repeat(40) + '\n\n');
+    navigator.clipboard.writeText(combined).then(() => {
+        showToast(`✅ ${all.length} template berhasil di-copy!`);
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = combined; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast(`✅ ${all.length} template berhasil di-copy!`);
+    });
+}
+</script>
+</body>
+</html>
